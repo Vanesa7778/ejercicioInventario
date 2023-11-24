@@ -1,148 +1,136 @@
 #Se define una clase llamada equipo que representa un equipo de computo
-class Equipo:
-
-    def __init__(self, id_equipo, cargador, mouse, ambiente):
-#se inicializa los atributos del equipo
-        self.ID = id_equipo
+class EquipoComputo:
+    def _init_(self, idEquipo, cargador, mouse, ambiente):
+        #se inicializa los atributos del equipo
+        self.ID = idEquipo
         self.Cargador = cargador
         self.Mouse = mouse
         self.Ambiente = ambiente
         self.Novedades = []#lista para almacenar novedades del equipo
 #se define la clase SistemaGestionEquipos que gestiona la informacion de los equipos
-class SistemaGestionEquipos:
-    def __init__(self):
-        self.equipos = {}#se inicializa el  diccionario que almacenara los equipos
-#metodo para agregar un nuevo equipo al sistema
-    def agregarEquipo(self, idEquipo, cargador, mouse, ambiente):
-        self.equipos[idEquipo] = Equipo(idEquipo, cargador, mouse, ambiente)
-#metodo para agregar novedades a un equipo existente
-    def agregarNovedad(self, idEquipo, fecha, descripcion):
-        if idEquipo in self.equipos:
-            self.equipos[idEquipo].Novedades.append({'Fecha': fecha, 'Descripcion': descripcion})
-            print(f"La novedad ha sido agregada con exito al equipo con ID {idEquipo}")
+
+# Se define un diccionario vacio llamado 'equipos' para almacenar la informacion de los equipos de computo.
+equipos = {}
+
+# Funcion para agregar un equipo al diccionario 'equipos'
+def agregarEquipo(idEquipo, cargador, mouse, ambiente):
+    equipos[idEquipo] = EquipoComputo(idEquipo, cargador, mouse, ambiente)
+    print("El equipo a sido registrado correctamente")
+
+# Funcion para agregar una novedad a un equipo especifico.
+def agregarNovedad(idEquipo, fecha, descripcion):
+    if idEquipo in equipos:
+        equipos[idEquipo].Novedades.append({'Fecha': fecha, 'Descripcion': descripcion})
+        print("La novedad ha sido agregada con exito al equipo con ID {}.".format(idEquipo))
+    else:
+        print("El equipo con ID {} no existe.".format(idEquipo))
+
+# Funcion para obtener un reporte de equipos con novedades.
+def reporteNovedades():
+    equiposConNovedades = [equipo for equipo in equipos.values() if equipo.Novedades]
+    return equiposConNovedades
+
+# Funcion para mostrar todos los equipos y sus novedades.
+def mostrarEquipos():
+    for equipo in equipos.values():
+        print("ID: {}".format(equipo.ID))
+        print("Cargador: {}".format(equipo.Cargador))
+        print("Mouse: {}".format(equipo.Mouse))
+        print("Ambiente: {}".format(equipo.Ambiente))
+        print("Novedades:")
+        for novedad in equipo.Novedades:
+            print("- Fecha: {}, Descripcion: {}".format(novedad['Fecha'], novedad['Descripcion']))
+        print("-------------")
+
+# Funcion para modificar la informacion de un equipo existente.
+def modificarEquipo(idEquipo, cargador, mouse, ambiente):
+    if idEquipo in equipos:
+        equipos[idEquipo].Cargador = cargador
+        equipos[idEquipo].Mouse = mouse
+        equipos[idEquipo].Ambiente = ambiente
+    else:
+        print("El equipo con ID {} no existe.".format(idEquipo))
+
+# Funcion para eliminar un equipo del diccionario 'equipos'.
+def eliminarEquipo(idEquipo):
+    if idEquipo in equipos:
+        del equipos[idEquipo]
+    else:
+        print("El equipo con ID {} no existe.".format(idEquipo))
+
+# Funcion principal que maneja el bucle y las opciones del usuario.
+def menu():
+    while True:
+        print("Opciones de la aplicacion:")
+        print("A. Agregar un equipo de computo")
+        print("B. Agregar una novedad sobre un equipo")
+        print("C. Buscar un equipo por ID")
+        print("D. Mostrar reporte de equipos con novedades")
+        print("E. Mostrar todos los equipos")
+        print("F. Modificar informacion de un equipo")
+        print("G. Eliminar un registro de computo")
+        print("S. Salir")
+
+        opcion = input("Digite la opcion que desea realizar: ")
+
+        # Se utilizan condicionales para ejecutar la funcion correspondiente segun la opcion ingresada por el usuario.
+        if opcion.lower() == 'a':
+            # Se solicita la informacion del nuevo equipo y se llama a la funcion 'agregarEquipo'.
+            idEquipo = input("Ingrese el ID del equipo que desea agregar: ")
+            cargador = input("El equipo cuenta con cargador? (si/no): ")
+            mouse = input("El equipo cuenta con mouse? (si/no): ")
+            ambiente = input("En que ambiente se encuentra el equipo?: ")
+            agregarEquipo(idEquipo, cargador, mouse, ambiente)
+        elif opcion.lower() == 'b':
+            # Se solicita informacion de la novedad y se llama a la funcion 'agregarNovedad'.
+            idEquipo = input("Ingrese el ID del equipo al que le va a registrar una novedad: ")
+            fecha = input("Ingrese la fecha de la novedad: ")
+            descripcion = input("Ingrese la descripcion de la novedad: ")
+            agregarNovedad(idEquipo, fecha, descripcion)
+        elif opcion.lower() == 'c':
+            # Se busca un equipo por ID y se muestra su informacion si existe.
+            idEquipo = input("Ingrese el ID del equipo que desea buscar: ")
+            if idEquipo in equipos:
+                print("Datos del equipo:")
+                print("ID: {}".format(equipos[idEquipo].ID))
+                print("Cargador: {}".format(equipos[idEquipo].Cargador))
+                print("Mouse: {}".format(equipos[idEquipo].Mouse))
+                print("Ambiente: {}".format(equipos[idEquipo].Ambiente))
+            else:
+                print("El equipo no se encuentra en la base de datos")
+        elif opcion.lower() == 'd':
+            # Se muestra el reporte de equipos con novedades.
+            equiposNovedades = reporteNovedades()
+            if not equiposNovedades:
+                print("No hay ninguna novedad en los equipos")
+            else:
+                for equipo in equiposNovedades:
+                    print("ID: {}".format(equipo.ID))
+                    for novedad in equipo.Novedades:
+                        print("- Fecha: {}, Descripcion: {}".format(novedad['Fecha'], novedad['Descripcion']))
+        elif opcion.lower() == 'e':
+            # Se llama a la funcion para mostrar todos los equipos.
+            mostrarEquipos()
+        elif opcion.lower() == 'f':
+        # Se solicita la informacion para modificar un equipo y se llama
+            idEquipo = input("Ingrese el ID del equipo que desea modificar: ")
+            cargador = input("El equipo cuenta con cargador? (si/no): ")
+            mouse = input("El equipo cuenta con mouse? (si/no): ")
+            ambiente = input("En que ambiente se encuentra el equipo?: ")
+            modificarEquipo(idEquipo, cargador, mouse, ambiente)
+        elif opcion.lower() == 'g':
+            # Se solicita el ID del equipo a eliminar y se llama a la funcion 'eliminarEquipo'.
+            idEquipo = input("Ingrese el ID del equipo que desea eliminar: ")
+            eliminarEquipo(idEquipo)
+        elif opcion.lower() == 's':
+            # Se sale del bucle si la opcion es 's'.
+            break
         else:
-            print(f"El equipo con ID {idEquipo} no esta en la base de datos")
-#metodo para mostrar equipos con novedades
-    def mostrarEquiposConNovedades(self):
-        equiposConNovedades = [equipo for equipo in self.equipos.values() if equipo.Novedades]
-        return equiposConNovedades#se devuelve la lista de equipos con novedades
-#metodo para mostrar todos los equipos y sus novedades
-    def mostrarEquipos(self):
-        for equipo in self.equipos.values():
-            print(f"ID: {equipo.ID}")
-            print(f"Cargador: {equipo.Cargador}")
-            print(f"Mouse: {equipo.Mouse}")
-            print(f"Ambiente: {equipo.Ambiente}")
-            print("Novedades:")
-            for novedad in equipo.Novedades:
-                print(f"- Fecha: {novedad['Fecha']}, Descripcion: {novedad['Descripcion']}")
-            print("----------------------")
-#metodo para modificar la informacion de un equipo
-    def modificarEquipo(self, idEquipo, cargador, mouse, ambiente):
-        if idEquipo in self.equipos:
-            self.equipos[idEquipo].Cargador = cargador
-            self.equipos[idEquipo].Mouse = mouse
-            self.equipos[idEquipo].Ambiente = ambiente
-        else:
-            print(f"El equipo con ID {idEquipo} no existe.")
+            # Se informa al usuario si la opcion ingresada no es valida.
+            print("La opcion que ingreso no es valida, verifique las opciones e ingrese una correcta")
 
-#metodo para eliminar un equipo del sistema
-    def eliminarEquipo(self, idEquipo):
-        if idEquipo in self.equipos:
-            del self.equipos[idEquipo]
-        else:
-            print(f"El equipo con ID {idEquipo} no esta en la base de datos.")
-#metodo para mostrar el menu de opciones y gestionar las acciones del usuario
-    def menu(self):
-        while True:
-            print("Opciones de la aplicacion:")
-            print("A. Agregar un equipo de computo")
-            print("B. Agregar una novedad sobre un equipo")
-            print("C. Buscar un equipo por ID")
-            print("D. Mostrar reporte de equipos con novedades")
-            print("E. Mostrar todos los equipos")
-            print("F. Modificar información de un equipo")
-            print("G. Eliminar un registro de computo")
-            print("S. Salir")
+    print("El programa ha terminado con exito :D.")
 
-            opcion = input("Digite la opcion que desea realizar: ")
-#opcion A para agregar un equipo de computo
-            if opcion.lower() == 'a':
-                idEquipo = input("Ingrese el ID del equipo que desea agregar: ")
-                cargador = input("El equipo cuenta con cargador? (si/no): ")
-                mouse = input("El equipo cuenta con mouse? (si/no): ")
-                ambiente = input("En que ambiente se encuentra el equipo?: ")
-                self.agregarEquipo(idEquipo, cargador, mouse, ambiente)
-                print(" - El equipo se ha agregado a la bd")
-                print("----------------------")
-
-#opcion B para agregar una novedad sobre un equipo
-            elif opcion.lower() == 'b':
-                idEquipo = input("Ingrese el ID del equipo al que le va a registrar una novedad: ")
-                if not self.equipos.get(idEquipo):
-                    print("No hay ningun equipo registrado con ese ID. Verifique el ID")
-                else:
-                    fecha = input("Ingrese la fecha de la novedad: ")
-                    descripcion = input("Ingrese la descripcion de la novedad: ")
-                    self.agregarNovedad(idEquipo, fecha, descripcion)
-                    print("----------------------")
-
-#opcion C para buscar un equipo por ID
-            elif opcion.lower() == 'c':
-                idEquipo = input("Ingrese el ID del equipo que desea buscar: ")
-                if idEquipo in self.equipos:
-                    print("Datos del equipo:")
-                    print(f"ID: {self.equipos[idEquipo].ID}")
-                    print(f"Cargador: {self.equipos[idEquipo].Cargador}")
-                    print(f"Mouse: {self.equipos[idEquipo].Mouse}")
-                    print(f"Ambiente: {self.equipos[idEquipo].Ambiente}")
-                    print("----------------------")
-                else:
-                    print("El equipo no se encuentra en la base de datos")
-                    print("----------------------")
- #opcion D para mostrar reporte de equipos con novedades
-            elif opcion.lower() == 'd':
-                equiposNovedades = self.mostrarEquiposConNovedades()
-                if not equiposNovedades:
-                    print("No hay ninguna novedad en los equipos")
-                else:
-                    for equipo in equiposNovedades:
-                        print(f"ID: {equipo.ID}")
-                        for novedad in equipo.Novedades:
-                            print(f"Fecha: {novedad['Fecha']}")
-                            print(f"Descripcion: {novedad['Descripcion']}")
-                            print("----------------------")
-
-#opcion E para mostrar todos los equipos          
-            elif opcion.lower() == 'e':
-                if self.equipos:
-                    self.mostrarEquipos()
-                else:
-                    print("No hay ningun equipo registrado")
-
-#opcion F para modificar informacion de un equipo
-            elif opcion.lower() == 'f':
-                idEquipo = input("Ingrese el ID del equipo que desea modificar: ")
-                cargador = input("El equipo cuenta con cargador? (si/no): ")
-                mouse = input("El equipo cuenta con mouse? (si/no): ")
-                ambiente = input("En que ambiente se encuentra el equipo?: ")
-                self.modificarEquipo(idEquipo, cargador, mouse, ambiente)
-                print("----------------------")
-#opcion G para eliminar un registro de computo
-            elif opcion.lower() == 'g':
-                idEquipo = input("Ingrese el ID del equipo que desea eliminar: ")
-                print("----------------------")
-                self.eliminarEquipo(idEquipo)
-#opcion S para salir del bucle y terminar el programa
-            elif opcion.lower() == 's':
-                break
-            else:#mensaje para opciones no validas
-                print("La opcion que ingreso no es valida, verifique las opciones e ingrese una correcta")
-#mensaje de finalizacion del programa
-        print("El programa ha terminado con exito :D.")
-
-# Crear una instancia del sistema de gestion de equipos y ejecutar el menu
-sistema = SistemaGestionEquipos()
-sistema.menu()
-
+# Se llama a la funcion principal 'menu' para ejecutar el programa.
+menu()
 
